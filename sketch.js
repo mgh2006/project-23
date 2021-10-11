@@ -3,47 +3,53 @@ const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var engine, world, backgroundImg;
-var canvas, angle, tower, ground, cannon;
-var cannonBall;
+var engine, world;
+var canvas;
+var palyer, playerBase, playerArcher;
+var baseimage;
 
 function preload() {
-  backgroundImg = loadImage("./assets/background.gif");
-  towerImage = loadImage("./assets/tower.png");
+  backgroundImg = loadImage("./assets/background.png");
+  baseimage = loadImage("./assets/base.png");
+  playerimage = loadImage("./assets/player.png");
 }
 
 function setup() {
-  canvas = createCanvas(1200, 600);
+  canvas = createCanvas(windowWidth, windowHeight);
+
   engine = Engine.create();
   world = engine.world;
-  angleMode(DEGREES)
-  angle = 20
+  angleMode(DEGREES);
 
-  ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
-  World.add(world, ground);
+  
+  var options= {
+    isStatic: true
+  };
 
-  tower = Bodies.rectangle(160, 350, 160, 310, { isStatic: true });
-  World.add(world, tower);
 
-  cannon = new Cannon(180, 110, 130, 100, angle);
-  cannonBall = new CannonBall(cannon.x, cannon.y);
+  //create player base body
+  playerBase= Bodies.rectangle(200,350,180,150,options);
+  World.add(world, playerBase);
+
+
+ //create player body]
+player= Bodies.rectangle(250, playerBase.position.y-160,50,180,options);
+World.add(world,player)
+
+
 }
 
 function draw() {
-  background(189);
-  image(backgroundImg, 0, 0, width, height);
+  background(backgroundImg);
+  image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
+  image(playerimage,player.position.x,player.position.y,50,180) 
+
 
   Engine.update(engine);
 
-  rect(ground.position.x, ground.position.y, width * 2, 1);
-  push();
-  imageMode(CENTER);
-  image(towerImage, tower.position.x, tower.position.y, 160, 310);
-  pop();
-
-  cannon.display();
-  cannonBall.display();
+  // Title
+  fill("#FFFF");
+  textAlign("center");
+  textSize(40);
+  text("EPIC ARCHERY", width / 2, 100);
 }
-function keyReleased() { if (keyCode === DOWN_ARROW) { cannonBall.shoot(); } }
-
-
